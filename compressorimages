@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crush Image Size - Murali Tools</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #4f46e5, #9333ea);
+      color: white;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    .upload-box {
+      background: white;
+      color: #333;
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 1rem;
+      max-width: 500px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    input[type="file"] {
+      padding: 1rem;
+      border: 2px dashed #9333ea;
+      border-radius: 0.5rem;
+      width: 100%;
+    }
+    button {
+      background: #9333ea;
+      color: white;
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .output {
+      margin-top: 1rem;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Crush Your Image Size, Not Quality ✨</h1>
+    <p>Compress your JPEG/PNG images online with just one click!</p>
+  </header>
+
+  <div class="upload-box">
+    <input type="file" id="upload" accept="image/*" />
+    <button onclick="compressImage()">Compress Now</button>
+    <div class="output" id="output"></div>
+  </div>
+
+  <script>
+    function compressImage() {
+      const fileInput = document.getElementById('upload');
+      const output = document.getElementById('output');
+      output.innerHTML = '';
+
+      const file = fileInput.files[0];
+      if (!file) {
+        alert("Please upload an image!");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = function () {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          const MAX_WIDTH = 800;
+          const scaleSize = MAX_WIDTH / img.width;
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scaleSize;
+
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.5);
+
+          const resultImg = document.createElement('img');
+          resultImg.src = compressedDataUrl;
+
+          const downloadBtn = document.createElement('a');
+          downloadBtn.href = compressedDataUrl;
+          downloadBtn.download = 'compressed.jpg';
+          downloadBtn.innerText = '⬇️ Download Compressed Image';
+          downloadBtn.style.display = 'inline-block';
+          downloadBtn.style.marginTop = '1rem';
+          downloadBtn.style.color = '#9333ea';
+          downloadBtn.style.fontWeight = 'bold';
+
+          output.appendChild(resultImg);
+          output.appendChild(downloadBtn);
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+
+</body>
+</html>
